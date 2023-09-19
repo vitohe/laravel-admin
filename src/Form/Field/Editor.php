@@ -7,12 +7,20 @@ use Encore\Admin\Form\Field;
 class Editor extends Field
 {
     protected static $js = [
-        '//cdn.ckeditor.com/4.5.10/standard/ckeditor.js',
+        'https://cardhome.oss-cn-shanghai.aliyuncs.com/js/ckeditor-v1.3.js',
     ];
 
     public function render()
     {
-        $this->script = "CKEDITOR.replace('{$this->id}');";
+        $config = json_encode([
+            'simpleUpload' => [
+                'uploadUrl' => '/admin/upload-editor-image',
+                'headers' => [
+                    'X-CSRF-TOKEN' => 'CSRF-Token',
+                ]
+            ]
+        ]);
+        $this->script = "ClassicEditor.create( document.querySelector( '#{$this->id}' ), {$config} )";
 
         return parent::render();
     }
